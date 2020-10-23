@@ -4,8 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container, Row, Col, Image, Form, Button } from "react-bootstrap";
 
 import '../styles/HomePage.css';
+import Footer from "../components/Footer";
 
 export default class HomePage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+
     render() {
         return (
             <Container fluid className="body">
@@ -50,24 +58,7 @@ export default class HomePage extends Component {
                     </Form.Group>
                 </Form>
 
-                <footer className="footer">
-                    <Row className="footer-image-row">
-                        <Col xs={0} md={3}></Col>
-                        <Col xs={12} md={6}>
-                            <div className="footer-image-container">
-                                <Image src={require("../assets/the_moviedb_logo.svg")} className="footer-image" />
-                            </div>
-                        </Col>
-                        <Col xs={0} md={3}></Col>
-                    </Row>
-                    <Row className="footer-text-row">
-                        <Col xs={1}></Col>
-                        <Col xs={10}>
-                            <p className="footer-text">This product uses the TMDb API but is not endorsed or certified by TMDb.</p>
-                        </Col>
-                        <Col xs={1}></Col>
-                    </Row>
-                </footer>
+                <Footer />
             </Container>
         );
     }
