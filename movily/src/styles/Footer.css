@@ -1,0 +1,35 @@
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px; /* Set the fixed height of the footer here */
+}
+
+.footer-image-row {
+    width: 100%;
+    height: 60%;
+    margin-bottom: 10px;
+}
+
+.footer-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-image {
+    width: 45%;
+    object-fit: contain;
+}
+
+.footer-text-row {
+    width: 100%;
+    height: 35%;
+}
+
+.footer-text {
+    color: white;
+    text-align: center;
+}
