@@ -1,13 +1,17 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    background-color: #ed0015;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+    font-family: 'Grand Hotel';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Grand Hotel'), url(../assets/fonts/GrandHotel-Regular.otf) format('truetype');
+}
+
+@font-face {
+    font-family: 'FV Almelo';
+    font-style: normal;
+    font-weight: bold;
+    src: local('FV Almelo'), url(../assets/fonts/fv_almelo-webfont.ttf) format('truetype');
 }
