@@ -1,22 +1,82 @@
+import Axios from "axios";
 import React, { Component } from "react";
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container, Row, Col, Image, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Alert, Image, Form, Button } from "react-bootstrap";
 
+import env from "../env";
 import '../styles/HomePage.css';
+import apiRoutes from "../routes";
+
 import Footer from "../components/Footer";
 
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            query: "",
+            moviesList: [],
+            numPages: 1,
+            currentPage: 1,
+            errors: []
         }
+    }
+
+    search = (event) => {
+        event.preventDefault();
+
+        let searchParams = {
+            api_key: env.tmdbApiKey,
+            query: this.state.query,
+            include_adult: false
+        };
+
+        Axios.get(`${env.tmdbApiBaseUrl}${apiRoutes.search.movies}`, { params: searchParams })
+            .then((response) => {
+                let { results, total_pages } = response.data;
+                console.log(results);
+                this.setState({ moviesList: results, numPages: total_pages });
+            })
+            .catch((error) => {
+                let errors = [];
+                try {
+                    errors = error.response.data.errors;
+                    this.setState({ errors: errors });
+                }
+                catch(err) {
+                    errors = [error.message];
+                    this.setState({ errors: errors });
+                }
+            });
+    }
+
+    dismisError = (idx) => {
+        let errors = this.state.errors;
+        errors.splice(idx, 1);
+        this.setState({ errors: errors });
     }
 
     render() {
         return (
             <Container fluid className="body">
+                {(this.state.errors.length > 0) ?
+                    this.state.errors.map((error, idx) => {
+                        return (
+                            <Alert
+                                key={idx}
+                                variant="danger"
+                                style={{ marginBottom: 20 }}
+                                onClose={() => this.dismisError(idx)}
+                                dismissible
+                            >
+                                {error}
+                            </Alert>
+                        );
+                    })
+                    :
+                    null
+                }
+
                 <div className="logo-container">
                     <Row>
                         <Col xs={4} md={5}></Col>
@@ -43,12 +103,18 @@ export default class HomePage extends Component {
                     </Row>
                 </div>
 
-                <Form className="form">
+                <Form className="form" onSubmit={this.search}>
                     <Form.Group as={Row}>
                         <Col xs={1} md={3}></Col>
                         <Col xs={10} md={6}>
                             <div className="search-cotainer">
-                                <Form.Control type="text" placeholder="Movie Name" className="search-input" />
+                                <Form.Control
+                                    name="query"
+                                    type="text"
+                                    placeholder="Query"
+                                    className="search-input"
+                                    onChange={(event) => this.setState({ query: event.target.value })}
+                                />
                                 <Button type="submit" className="search-button">
                                     <FontAwesomeIcon icon={faSearch} color="#ed0015" />
                                 </Button>
