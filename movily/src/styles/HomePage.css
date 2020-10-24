@@ -58,7 +58,14 @@
     overflow-y:scroll;
 }
 
-.pagination {
+.top-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.bottom-pagination {
     display: flex;
     align-items: center;
     justify-content: center;

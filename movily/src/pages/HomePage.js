@@ -88,7 +88,7 @@ export default class HomePage extends Component {
 
             if (page === 3 || page === this.state.numPages-2)
                 return (
-                    <Pagination.Ellipsis />
+                    <Pagination.Ellipsis disabled/>
                 );
 
             return null;
@@ -163,6 +163,20 @@ export default class HomePage extends Component {
                     </Form.Group>
                 </Form>
 
+                {(this.state.numPages > 1) ?
+                    <Pagination className="top-pagination">
+                        <Pagination.First onClick={() => this.search(null, 1)} disabled={this.state.currentPage === 1}/>
+                        <Pagination.Prev onClick={() => this.search(null, this.state.currentPage-1)} disabled={this.state.currentPage === 1}/>
+
+                        {this.renderPagination()}
+
+                        <Pagination.Next onClick={() => this.search(null, this.state.currentPage+1)} disabled={this.state.currentPage === this.state.numPages}/>
+                        <Pagination.Last onClick={() => this.search(null, this.state.numPages)} disabled={this.state.currentPage === this.state.numPages}/>
+                    </Pagination>
+                    :
+                    null
+                }
+
                 {(this.state.movies.length > 0) ?
                     this.state.movies.map((movie, idx) => {
                         return (
@@ -179,7 +193,7 @@ export default class HomePage extends Component {
                 }
 
                 {(this.state.numPages > 1) ?
-                    <Pagination className="pagination">
+                    <Pagination className="bottom-pagination">
                         <Pagination.First onClick={() => this.search(null, 1)} disabled={this.state.currentPage === 1}/>
                         <Pagination.Prev onClick={() => this.search(null, this.state.currentPage-1)} disabled={this.state.currentPage === 1}/>
 
