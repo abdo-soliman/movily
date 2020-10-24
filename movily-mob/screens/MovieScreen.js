@@ -3,13 +3,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 import MovieCard from "../components/MovieCard";
+import Pagination from "../components/Pagination";
 import Background from "../components/Background";
 
 export default class MovieScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            numPages: 1,
+            numPages: 50,
+            currentPage: 1,
             movies: [
                 {
                     popularity: 193.938,
@@ -79,7 +81,6 @@ export default class MovieScreen extends Component {
 
                     {(this.state.movies.length > 0) ?
                         this.state.movies.map((movie, idx) => {
-                            console.log(`[IDX] ${idx}, last: ${idx === this.state.movies.length - 1}, pag: ${this.state.numPages !== 1}`);
                             return (
                                 <MovieCard
                                     key={movie.id}
