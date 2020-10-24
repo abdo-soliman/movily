@@ -4,7 +4,7 @@ import { Row, Col, Image } from "react-bootstrap";
 import "../styles/MovieCard.css";
 
 import env from "../env";
-import { MovieGenreById } from "../core/utils";
+import { MovieGenreById, TvGenreById } from "../core/utils";
 
 export default class MovieCard extends Component {
     constructor(props) {
@@ -15,16 +15,16 @@ export default class MovieCard extends Component {
     }
 
     componentDidMount() {
-        this.getGenres(this.props.movie.genre_ids).then((result) => this.setState({ genres: result }));
+        this.getGenres(this.props.movie.genre_ids, this.props.type).then((result) => this.setState({ genres: result }));
     }
 
-    getGenres = async (genres) => {
+    getGenres = async (genres, type) => {
         let result = "";
         for (let i = 0; i < genres.length; i++) {
             if (i === 0)
-                result = await MovieGenreById(genres[i]);
+                result = (type === "movie") ? await MovieGenreById(genres[i]) : TvGenreById(genres[i]);
             else
-                result = `${result}, ${await MovieGenreById(genres[i])}`;
+                result = `${result}, ${(type === "movie") ? await MovieGenreById(genres[i]) : TvGenreById(genres[i])}`;
         }
     
         return result;
@@ -39,7 +39,9 @@ export default class MovieCard extends Component {
                     </Col>
                     <Col md={7}>
                         <Row>
-                            <p className="movie-title">{this.props.movie.title}</p>
+                            <p className="movie-title">
+                                { (this.props.type === "movie") ? this.props.movie.title : this.props.movie.name}
+                            </p>
                         </Row>
                         <Row>
                             <p className="movie-genre">

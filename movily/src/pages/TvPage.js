@@ -183,6 +183,7 @@ export default class TvPage extends Component {
                             <MovieCard
                                 key={movie.id}
                                 movie={movie}
+                                type="tv"
                                 last={idx === this.state.movies.length - 1}
                                 paginated={this.state.numPages === 1}
                             />
