@@ -2,9 +2,59 @@ import React, { Component } from 'react';
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
+import MovieCard from "../components/MovieCard";
 import Background from "../components/Background";
 
 export default class MovieScreen extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            numPages: 1,
+            movies: [
+                {
+                    popularity: 193.938,
+                    vote_count: 729,
+                    video: false,
+                    poster_path: "/bAQ8O5Uw6FedtlCbJTutenzPVKd.jpg",
+                    id: 317442,
+                    adult: false,
+                    backdrop_path: "/l8ubUlfzlB5R2j9cJ3CN7tj0gmd.jpg",
+                    original_language: "ja",
+                    original_title: "The Last: Naruto the Movie",
+                    genre_ids: [
+                        28,
+                        16,
+                        10749
+                    ],
+                    title: "The Last: Naruto the Movie",
+                    vote_average: 7.9,
+                    overview: "Two years after the events of the Fourth Great Ninja War, the moon that Hagoromo Otsutsuki created long ago to seal away the Gedo Statue begins to descend towards the world, threatening to become a meteor that would destroy everything on impact. Amidst this crisis, a direct descendant of Kaguya Otsutsuki named Toneri Otsutsuki attempts to kidnap Hinata Hyuga but ends up abducting her younger sister Hanabi. Naruto and his allies now mount a rescue mission before finding themselves embroiled in a final battle to decide the fate of everything.",
+                    release_date: "2014-12-06"
+                },
+                {
+                    popularity: 193.938,
+                    vote_count: 729,
+                    video: false,
+                    poster_path: "/bAQ8O5Uw6FedtlCbJTutenzPVKd.jpg",
+                    id: 317441,
+                    adult: false,
+                    backdrop_path: "/l8ubUlfzlB5R2j9cJ3CN7tj0gmd.jpg",
+                    original_language: "ja",
+                    original_title: "The Last: Naruto the Movie",
+                    genre_ids: [
+                        28,
+                        16,
+                        10749
+                    ],
+                    title: "The Last: Naruto the Movie",
+                    vote_average: 7.9,
+                    overview: "Two years after the events of the Fourth Great Ninja War, the moon that Hagoromo Otsutsuki created long ago to seal away the Gedo Statue begins to descend towards the world, threatening to become a meteor that would destroy everything on impact. Amidst this crisis, a direct descendant of Kaguya Otsutsuki named Toneri Otsutsuki attempts to kidnap Hinata Hyuga but ends up abducting her younger sister Hanabi. Naruto and his allies now mount a rescue mission before finding themselves embroiled in a final battle to decide the fate of everything.",
+                    release_date: "2014-12-06"
+                }
+            ]
+        }
+    }
+
     render () {
         return (
             <Background>
@@ -26,9 +76,27 @@ export default class MovieScreen extends Component {
                             <Ionicons name="ios-search" size={20} color="#ed0015" />
                         </TouchableOpacity>
                     </View>
+
+                    {(this.state.movies.length > 0) ?
+                        this.state.movies.map((movie, idx) => {
+                            console.log(`[IDX] ${idx}, last: ${idx === this.state.movies.length - 1}, pag: ${this.state.numPages !== 1}`);
+                            return (
+                                <MovieCard
+                                    key={movie.id}
+                                    movie={movie}
+                                    type="movie"
+                                    last={idx === this.state.movies.length - 1}
+                                    paginated={this.state.numPages !== 1}
+                                />
+                            );
+                        })
+                        :
+                        null
+                    }
                 </View>
             </Background>
         );
+        
     }
 }
 
@@ -81,6 +149,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         borderRadius: 10,
+        marginBottom: 30,
     },
     formInput: {
         flex: 8,
