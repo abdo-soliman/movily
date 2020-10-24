@@ -1,13 +1,89 @@
+import Axios from "axios";
+import * as Network from 'expo-network';
 import React, { Component } from 'react';
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Alert, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
+import env from "../env";
+import apiRoutes from "../core/routes";
+import MovieCard from "../components/MovieCard";
+import Pagination from "../components/Pagination";
 import Background from "../components/Background";
+import LoadingModal from "../components/LoadingModal";
 
 export default class TvScreen extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            query: "",
+            numPages: 1,
+            currentPage: 1,
+            footerVisible: true,
+            modalVisible: false,
+            loadingMessage: "we are looking for your show please wait",
+            shows: []
+        }
+    }
+
+    search = async (getPage=1) => {
+        let networkOff = false;
+        try {
+            let networkState = await Network.getNetworkStateAsync();
+            if (!(networkState.isConnected && networkState.isInternetReachable))
+                networkOff = true;
+        } catch (err) {
+            networkOff = true;
+        }
+
+        if (networkOff) {
+            Alert.alert(
+                "Error",
+                "Please Turn on you Cellular data connection or WIFI",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            );
+
+            return false;
+        }
+
+        this.setState({ modalVisible: true });
+        let searchParams = {
+            api_key: env.tmdbApiKey,
+            query: this.state.query,
+            include_adult: false,
+            page: getPage
+        };
+
+        Axios.get(`${env.tmdbApiBaseUrl}${apiRoutes.search.tv}`, { params: searchParams })
+            .then((response) => {
+                let { results, total_pages, page } = response.data;
+                this.setState({ shows: results, numPages: total_pages, currentPage: page, modalVisible: false });
+            })
+            .catch((error) => {
+                this.setState({ modalVisible: false });
+                try {
+                    error.response.data.errors.map((error) => {
+                        Alert.alert(
+                            "Error",
+                            error,
+                            [{text: "OK", onPress: () => {}}],
+                        );
+                    });
+                }
+                catch (err) {
+                    Alert.alert(
+                        "Error",
+                        error.message,
+                        [{text: "OK", onPress: () => {}}],
+                    );
+                }
+            });
+    }
+
     render () {
         return (
-            <Background>
+            <Background footerVisible={this.state.footerVisible}>
+                <LoadingModal visible={this.state.modalVisible} message={this.state.loadingMessage}/>
+
                 <View style={styles.container}>
                     <View style={styles.formLogoContainer}>
                         <Image source={require("../assets/logo-round.png")} style={styles.formLogo} />
@@ -21,14 +97,56 @@ export default class TvScreen extends Component {
                             placeholderTextColor="#393838"
                             returnKeyType="done"
                             style={styles.formInput}
+                            onFocus={() => this.setState({ footerVisible: false })}
+                            onChangeText={query => this.setState({ query: query })}
+                            onBlur={() => this.setState({ footerVisible: true })}
                         />
-                        <TouchableOpacity style={styles.formButton}>
+                        <TouchableOpacity style={styles.formButton} onPress={this.search}>
                             <Ionicons name="ios-search" size={20} color="#ed0015" />
                         </TouchableOpacity>
                     </View>
+
+                    {(this.state.numPages > 1) ?
+                        <Pagination
+                            numPages={this.state.numPages}
+                            currentPage={this.state.currentPage}
+                            onClick={this.search}
+                            position="top"
+                        />
+                        :
+                        null
+                    }
+
+                    {(this.state.shows.length > 0) ?
+                        this.state.shows.map((movie, idx) => {
+                            return (
+                                <MovieCard
+                                    key={movie.id}
+                                    movie={movie}
+                                    type="tv"
+                                    last={idx === this.state.shows.length - 1}
+                                    paginated={this.state.numPages !== 1}
+                                />
+                            );
+                        })
+                        :
+                        null
+                    }
+
+                    {(this.state.numPages > 1) ?
+                        <Pagination
+                            numPages={this.state.numPages}
+                            currentPage={this.state.currentPage}
+                            onClick={this.search}
+                            position="bottom"
+                        />
+                        :
+                        null
+                    }
                 </View>
             </Background>
         );
+        
     }
 }
 
@@ -81,6 +199,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         borderRadius: 10,
+        marginBottom: 30,
     },
     formInput: {
         flex: 8,

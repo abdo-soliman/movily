@@ -1,4 +1,5 @@
 import Axios from "axios";
+import * as Network from 'expo-network';
 import React, { Component } from 'react';
 import { Ionicons } from "@expo/vector-icons";
 import { View, Text, Alert, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
@@ -8,6 +9,7 @@ import apiRoutes from "../core/routes";
 import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 import Background from "../components/Background";
+import LoadingModal from "../components/LoadingModal";
 
 export default class MovieScreen extends Component {
     constructor(props) {
@@ -16,11 +18,34 @@ export default class MovieScreen extends Component {
             query: "",
             numPages: 1,
             currentPage: 1,
+            footerVisible: true,
+            modalVisible: false,
+            loadingMessage: "we are looking for your movie please wait",
             movies: []
         }
     }
 
-    search = (getPage=1) => {
+    search = async (getPage=1) => {
+        let networkOff = false;
+        try {
+            let networkState = await Network.getNetworkStateAsync();
+            if (!(networkState.isConnected && networkState.isInternetReachable))
+                networkOff = true;
+        } catch (err) {
+            networkOff = true;
+        }
+
+        if (networkOff) {
+            Alert.alert(
+                "Error",
+                "Please Turn on you Cellular data connection or WIFI",
+                [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+            );
+
+            return false;
+        }
+
+        this.setState({ modalVisible: true });
         let searchParams = {
             api_key: env.tmdbApiKey,
             query: this.state.query,
@@ -31,9 +56,10 @@ export default class MovieScreen extends Component {
         Axios.get(`${env.tmdbApiBaseUrl}${apiRoutes.search.movies}`, { params: searchParams })
             .then((response) => {
                 let { results, total_pages, page } = response.data;
-                this.setState({ movies: results, numPages: total_pages, currentPage: page });
+                this.setState({ movies: results, numPages: total_pages, currentPage: page, modalVisible: false });
             })
             .catch((error) => {
+                this.setState({ modalVisible: false });
                 try {
                     error.response.data.errors.map((error) => {
                         Alert.alert(
@@ -55,7 +81,9 @@ export default class MovieScreen extends Component {
 
     render () {
         return (
-            <Background>
+            <Background footerVisible={this.state.footerVisible}>
+                <LoadingModal visible={this.state.modalVisible} message={this.state.loadingMessage}/>
+
                 <View style={styles.container}>
                     <View style={styles.formLogoContainer}>
                         <Image source={require("../assets/logo-round.png")} style={styles.formLogo} />
@@ -69,7 +97,9 @@ export default class MovieScreen extends Component {
                             placeholderTextColor="#393838"
                             returnKeyType="done"
                             style={styles.formInput}
+                            onFocus={() => this.setState({ footerVisible: false })}
                             onChangeText={query => this.setState({ query: query })}
+                            onBlur={() => this.setState({ footerVisible: true })}
                         />
                         <TouchableOpacity style={styles.formButton} onPress={this.search}>
                             <Ionicons name="ios-search" size={20} color="#ed0015" />
