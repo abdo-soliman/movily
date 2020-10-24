@@ -5,7 +5,7 @@ import "../styles/Footer.css";
 
 const Footer = () => {
     return (
-        <footer className="footer">
+        <footer className="footer fixed-bottom">
             <Row className="footer-image-row">
                 <Col xs={0} md={3}></Col>
                 <Col xs={12} md={6}>

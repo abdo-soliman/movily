@@ -6,25 +6,24 @@ import { Container, Row, Col, Alert, Image, Form, Button } from "react-bootstrap
 
 import env from "../env";
 import '../styles/HomePage.css';
-import apiRoutes from "../routes";
+import apiRoutes from "../core/routes";
 
-import Footer from "../components/Footer";
+import MovieCard from "../components/MovieCard";
 
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             query: "",
-            moviesList: [],
             numPages: 1,
             currentPage: 1,
-            errors: []
+            errors: [],
+            movies: []
         }
     }
 
     search = (event) => {
         event.preventDefault();
-
         let searchParams = {
             api_key: env.tmdbApiKey,
             query: this.state.query,
@@ -35,7 +34,7 @@ export default class HomePage extends Component {
             .then((response) => {
                 let { results, total_pages } = response.data;
                 console.log(results);
-                this.setState({ moviesList: results, numPages: total_pages });
+                this.setState({ movies: results, numPages: total_pages });
             })
             .catch((error) => {
                 let errors = [];
@@ -43,7 +42,7 @@ export default class HomePage extends Component {
                     errors = error.response.data.errors;
                     this.setState({ errors: errors });
                 }
-                catch(err) {
+                catch (err) {
                     errors = [error.message];
                     this.setState({ errors: errors });
                 }
@@ -54,11 +53,11 @@ export default class HomePage extends Component {
         let errors = this.state.errors;
         errors.splice(idx, 1);
         this.setState({ errors: errors });
-    }
+    };
 
     render() {
         return (
-            <Container fluid className="body">
+            <Container>
                 {(this.state.errors.length > 0) ?
                     this.state.errors.map((error, idx) => {
                         return (
@@ -105,8 +104,8 @@ export default class HomePage extends Component {
 
                 <Form className="form" onSubmit={this.search}>
                     <Form.Group as={Row}>
-                        <Col xs={1} md={3}></Col>
-                        <Col xs={10} md={6}>
+                        <Col xs={1} md={2}></Col>
+                        <Col xs={10} md={8}>
                             <div className="search-cotainer">
                                 <Form.Control
                                     name="query"
@@ -120,11 +119,19 @@ export default class HomePage extends Component {
                                 </Button>
                             </div>
                         </Col>
-                        <Col xs={1} md={3}></Col>
+                        <Col xs={1} md={2}></Col>
                     </Form.Group>
                 </Form>
 
-                <Footer />
+                {(this.state.movies.length > 0) ?
+                    this.state.movies.map((movie, idx) => {
+                        return (
+                            <MovieCard key={movie.id} movie={movie} last={(idx === this.state.movies.length - 1)} />
+                        );
+                    })
+                    :
+                    null
+                }
             </Container>
         );
     }
