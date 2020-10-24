@@ -34,11 +34,11 @@ export default class MovieCard extends Component {
         return (
             <Row className={`${(this.props.last) ? "last-movie-container" : "movie-container"}`}>
                 <Row>
-                    <Col xs={5}>
+                    <Col md={5}>
                         <Image src={`${env.tmdbImageBaseUrl}${this.props.movie.poster_path}`} className="poster" />
                     </Col>
-                    <Col xs={7}>
-                        <Row className="movie-title-row">
+                    <Col md={7}>
+                        <Row>
                             <p className="movie-title">{this.props.movie.title}</p>
                         </Row>
                         <Row>

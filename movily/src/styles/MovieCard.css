@@ -14,26 +14,25 @@
     object-fit: contain;
 }
 
-.movie-title-row {
-    height: 60px;
-}
-
 .movie-title {
     font-family: "FV Almelo";
     color: white;
     font-size: 40px;
     text-align: left;
+    padding: 0px 20px;
 }
 
 .movie-genre {
     color: white;
     text-align: justify;
     font-weight: bold;
+    padding: 0px 20px;
 }
 
 .movie-overview {
     color: white;
     text-align: justify;
+    padding: 0px 20px;
 }
 
 .separator {
