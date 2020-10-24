@@ -8,7 +8,7 @@ const Footer = () => {
                 <Image source={require("../assets/the_moviedb_logo.png")} style={styles.footerImage} />
             </View>
 
-            <View style={styles.footerTextRow}>
+            <View style={styles.footerTextContainer}>
                 <View style={{ flex: 1 }}></View>
                 <View style={{ flex: 10 }}>
                     <Text style={styles.footerText}>This product uses the TMDb API but is not endorsed or certified by TMDb.</Text>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         width: "70%",
         resizeMode: "contain"
     },
-    footerTextRow: {
+    footerTextContainer: {
         width: "100%",
         flexDirection: "row"
     },
