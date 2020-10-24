@@ -9,6 +9,7 @@ import '../styles/SearchPage.css';
 import apiRoutes from "../core/routes";
 
 import MovieCard from "../components/MovieCard";
+import LoadingModal from "../components/LoadingModal";
 
 export default class TvPage extends Component {
     constructor(props) {
@@ -17,29 +18,33 @@ export default class TvPage extends Component {
             query: "",
             numPages: 1,
             currentPage: 1,
+            modalVisible: false,
+            modalMessage: "we are looking for your tv show please wait",
             pages: [],
             errors: [],
             movies: []
         }
     }
 
-    search = (event, page=1) => {
+    search = (event, getPage=1) => {
         if (event)
             event.preventDefault();
 
+        this.setState({ modalVisible: true });
         let searchParams = {
             api_key: env.tmdbApiKey,
             query: this.state.query,
             include_adult: false,
-            page: page
+            page: getPage
         };
 
         Axios.get(`${env.tmdbApiBaseUrl}${apiRoutes.search.tv}`, { params: searchParams })
             .then((response) => {
-                let { results, total_pages } = response.data;
-                this.setState({ movies: results, numPages: total_pages, currentPage: page });
+                let { results, total_pages, page } = response.data;
+                this.setState({ movies: results, numPages: total_pages, currentPage: page, modalVisible: false });
             })
             .catch((error) => {
+                this.setState({ modalVisible: false });
                 let errors = [];
                 try {
                     errors = error.response.data.errors;
@@ -98,6 +103,8 @@ export default class TvPage extends Component {
     render() {
         return (
             <Container>
+                <LoadingModal visible={this.state.modalVisible} message={this.state.modalMessage}/>
+
                 {(this.state.errors.length > 0) ?
                     this.state.errors.map((error, idx) => {
                         return (
@@ -185,7 +192,7 @@ export default class TvPage extends Component {
                                 movie={movie}
                                 type="tv"
                                 last={idx === this.state.movies.length - 1}
-                                paginated={this.state.numPages === 1}
+                                paginated={this.state.numPages !== 1}
                             />
                         );
                     })

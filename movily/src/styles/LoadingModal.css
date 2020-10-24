@@ -1,0 +1,20 @@
+.modal-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.modal-text {
+    font-family: "FV Almelo";
+    font-weight: bold;
+    font-size: 30px;
+    text-align: center;
+}
+
+.modal-spinner {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+}
