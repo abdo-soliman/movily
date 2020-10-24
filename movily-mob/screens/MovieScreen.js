@@ -1,7 +1,10 @@
+import Axios from "axios";
 import React, { Component } from 'react';
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Alert, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
+import env from "../env";
+import apiRoutes from "../core/routes";
 import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 import Background from "../components/Background";
@@ -10,51 +13,44 @@ export default class MovieScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            numPages: 50,
+            query: "",
+            numPages: 1,
             currentPage: 1,
-            movies: [
-                {
-                    popularity: 193.938,
-                    vote_count: 729,
-                    video: false,
-                    poster_path: "/bAQ8O5Uw6FedtlCbJTutenzPVKd.jpg",
-                    id: 317442,
-                    adult: false,
-                    backdrop_path: "/l8ubUlfzlB5R2j9cJ3CN7tj0gmd.jpg",
-                    original_language: "ja",
-                    original_title: "The Last: Naruto the Movie",
-                    genre_ids: [
-                        28,
-                        16,
-                        10749
-                    ],
-                    title: "The Last: Naruto the Movie",
-                    vote_average: 7.9,
-                    overview: "Two years after the events of the Fourth Great Ninja War, the moon that Hagoromo Otsutsuki created long ago to seal away the Gedo Statue begins to descend towards the world, threatening to become a meteor that would destroy everything on impact. Amidst this crisis, a direct descendant of Kaguya Otsutsuki named Toneri Otsutsuki attempts to kidnap Hinata Hyuga but ends up abducting her younger sister Hanabi. Naruto and his allies now mount a rescue mission before finding themselves embroiled in a final battle to decide the fate of everything.",
-                    release_date: "2014-12-06"
-                },
-                {
-                    popularity: 193.938,
-                    vote_count: 729,
-                    video: false,
-                    poster_path: "/bAQ8O5Uw6FedtlCbJTutenzPVKd.jpg",
-                    id: 317441,
-                    adult: false,
-                    backdrop_path: "/l8ubUlfzlB5R2j9cJ3CN7tj0gmd.jpg",
-                    original_language: "ja",
-                    original_title: "The Last: Naruto the Movie",
-                    genre_ids: [
-                        28,
-                        16,
-                        10749
-                    ],
-                    title: "The Last: Naruto the Movie",
-                    vote_average: 7.9,
-                    overview: "Two years after the events of the Fourth Great Ninja War, the moon that Hagoromo Otsutsuki created long ago to seal away the Gedo Statue begins to descend towards the world, threatening to become a meteor that would destroy everything on impact. Amidst this crisis, a direct descendant of Kaguya Otsutsuki named Toneri Otsutsuki attempts to kidnap Hinata Hyuga but ends up abducting her younger sister Hanabi. Naruto and his allies now mount a rescue mission before finding themselves embroiled in a final battle to decide the fate of everything.",
-                    release_date: "2014-12-06"
-                }
-            ]
+            movies: []
         }
+    }
+
+    search = (getPage=1) => {
+        let searchParams = {
+            api_key: env.tmdbApiKey,
+            query: this.state.query,
+            include_adult: false,
+            page: getPage
+        };
+
+        Axios.get(`${env.tmdbApiBaseUrl}${apiRoutes.search.movies}`, { params: searchParams })
+            .then((response) => {
+                let { results, total_pages, page } = response.data;
+                this.setState({ movies: results, numPages: total_pages, currentPage: page });
+            })
+            .catch((error) => {
+                try {
+                    error.response.data.errors.map((error) => {
+                        Alert.alert(
+                            "Error",
+                            error,
+                            [{text: "OK", onPress: () => {}}],
+                        );
+                    });
+                }
+                catch (err) {
+                    Alert.alert(
+                        "Error",
+                        error.message,
+                        [{text: "OK", onPress: () => {}}],
+                    );
+                }
+            });
     }
 
     render () {
@@ -73,11 +69,23 @@ export default class MovieScreen extends Component {
                             placeholderTextColor="#393838"
                             returnKeyType="done"
                             style={styles.formInput}
+                            onChangeText={query => this.setState({ query: query })}
                         />
-                        <TouchableOpacity style={styles.formButton}>
+                        <TouchableOpacity style={styles.formButton} onPress={this.search}>
                             <Ionicons name="ios-search" size={20} color="#ed0015" />
                         </TouchableOpacity>
                     </View>
+
+                    {(this.state.numPages > 1) ?
+                        <Pagination
+                            numPages={this.state.numPages}
+                            currentPage={this.state.currentPage}
+                            onClick={this.search}
+                            position="top"
+                        />
+                        :
+                        null
+                    }
 
                     {(this.state.movies.length > 0) ?
                         this.state.movies.map((movie, idx) => {
@@ -91,6 +99,17 @@ export default class MovieScreen extends Component {
                                 />
                             );
                         })
+                        :
+                        null
+                    }
+
+                    {(this.state.numPages > 1) ?
+                        <Pagination
+                            numPages={this.state.numPages}
+                            currentPage={this.state.currentPage}
+                            onClick={this.search}
+                            position="bottom"
+                        />
                         :
                         null
                     }
