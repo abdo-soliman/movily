@@ -1,0 +1,13 @@
+.navbar-container {
+    background-color: #fdf2dc;
+    height: 60px;
+}
+
+.brand-cotnainer {
+    height: 50px;
+}
+
+.brand-image {
+    height: 100%;
+    object-fit: contain;
+}
