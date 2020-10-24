@@ -1,21 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { AppLoading } from "expo";
+import * as Font from "expo-font";
+import React, { Component } from 'react';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import MainNavigator from "./navigation";
+
+export default class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isReady: false
+        };
+    }
+
+    loadApp = async () => {
+        await Font.loadAsync({
+            FvAlmelo: require('./assets/fonts/fv_almelo-webfont.ttf'),
+            GrandHotel: require('./assets/fonts/GrandHotel-Regular.otf'),
+        });
+    };
+
+    render() {
+        if (!this.state.isReady) {
+            return (
+                <AppLoading
+                    startAsync={this.loadApp}
+                    onFinish={() => this.setState({ isReady: true })}
+                />
+            );
+        }
+
+        return (
+            <MainNavigator />
+        );
+    }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
