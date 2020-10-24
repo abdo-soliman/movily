@@ -5,12 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container, Row, Col, Alert, Image, Form, Button, Pagination } from "react-bootstrap";
 
 import env from "../env";
-import '../styles/HomePage.css';
+import '../styles/SearchPage.css';
 import apiRoutes from "../core/routes";
 
 import MovieCard from "../components/MovieCard";
 
-export default class HomePage extends Component {
+export default class MoviesPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -150,7 +150,7 @@ export default class HomePage extends Component {
                                 <Form.Control
                                     name="query"
                                     type="text"
-                                    placeholder="Query"
+                                    placeholder="Movie Query"
                                     className="search-input"
                                     onChange={(event) => this.setState({ query: event.target.value })}
                                 />
