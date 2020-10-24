@@ -1,11 +1,14 @@
 import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 
+import Footer from "./Footer";
+
 const Background = ({ children }) => (
     <View style={styles.background}>
         <ScrollView style={styles.container} behavior="padding">
             {children}
         </ScrollView>
+        <Footer />
     </View>
 );
 
