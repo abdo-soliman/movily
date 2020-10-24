@@ -32,7 +32,7 @@ export default class MovieCard extends Component {
 
     render() {
         return (
-            <Row className={`${(this.props.last) ? "last-movie-container" : "movie-container"}`}>
+            <Row className={`${(this.props.paginated) ? "last-movie-container" : "movie-container"}`}>
                 <Row>
                     <Col md={5}>
                         <Image src={`${env.tmdbImageBaseUrl}${this.props.movie.poster_path}`} className="poster" />

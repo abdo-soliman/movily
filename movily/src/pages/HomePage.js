@@ -2,7 +2,7 @@ import Axios from "axios";
 import React, { Component } from "react";
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container, Row, Col, Alert, Image, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Alert, Image, Form, Button, Pagination } from "react-bootstrap";
 
 import env from "../env";
 import '../styles/HomePage.css';
@@ -17,24 +17,27 @@ export default class HomePage extends Component {
             query: "",
             numPages: 1,
             currentPage: 1,
+            pages: [],
             errors: [],
             movies: []
         }
     }
 
-    search = (event) => {
-        event.preventDefault();
+    search = (event, page=1) => {
+        if (event)
+            event.preventDefault();
+
         let searchParams = {
             api_key: env.tmdbApiKey,
             query: this.state.query,
-            include_adult: false
+            include_adult: false,
+            page: page
         };
 
         Axios.get(`${env.tmdbApiBaseUrl}${apiRoutes.search.movies}`, { params: searchParams })
             .then((response) => {
                 let { results, total_pages } = response.data;
-                console.log(results);
-                this.setState({ movies: results, numPages: total_pages });
+                this.setState({ movies: results, numPages: total_pages, currentPage: page });
             })
             .catch((error) => {
                 let errors = [];
@@ -54,6 +57,43 @@ export default class HomePage extends Component {
         errors.splice(idx, 1);
         this.setState({ errors: errors });
     };
+
+    renderPagination = () => {
+        let pages = [];
+        for (let i = 1; i <= this.state.numPages; i++)
+            pages.push(i);
+
+        if (this.state.numPages <= 5)
+            return pages.map((page) => {
+                return (
+                    <Pagination.Item
+                        onClick={() => this.search(null, page)}
+                        active={this.state.currentPage === page}
+                    >
+                        {page}
+                    </Pagination.Item>
+                );
+            });
+
+        return pages.map((page) => {
+            if (page <= 2 || page >= this.state.numPages-1 || this.state.currentPage === page)
+                return (
+                    <Pagination.Item
+                        onClick={() => this.search(null, page)}
+                        active={this.state.currentPage === page}
+                    >
+                        {page}
+                    </Pagination.Item>
+                );
+
+            if (page === 3 || page === this.state.numPages-2)
+                return (
+                    <Pagination.Ellipsis />
+                );
+
+            return null;
+        });
+    }
 
     render() {
         return (
@@ -126,9 +166,28 @@ export default class HomePage extends Component {
                 {(this.state.movies.length > 0) ?
                     this.state.movies.map((movie, idx) => {
                         return (
-                            <MovieCard key={movie.id} movie={movie} last={(idx === this.state.movies.length - 1)} />
+                            <MovieCard
+                                key={movie.id}
+                                movie={movie}
+                                last={idx === this.state.movies.length - 1}
+                                paginated={this.state.numPages === 1}
+                            />
                         );
                     })
+                    :
+                    null
+                }
+
+                {(this.state.numPages > 1) ?
+                    <Pagination className="pagination">
+                        <Pagination.First onClick={() => this.search(null, 1)} disabled={this.state.currentPage === 1}/>
+                        <Pagination.Prev onClick={() => this.search(null, this.state.currentPage-1)} disabled={this.state.currentPage === 1}/>
+
+                        {this.renderPagination()}
+
+                        <Pagination.Next onClick={() => this.search(null, this.state.currentPage+1)} disabled={this.state.currentPage === this.state.numPages}/>
+                        <Pagination.Last onClick={() => this.search(null, this.state.numPages)} disabled={this.state.currentPage === this.state.numPages}/>
+                    </Pagination>
                     :
                     null
                 }
