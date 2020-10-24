@@ -15,19 +15,17 @@ To build this project you will need to follow the following steps:
 
 ### `Install Packages`
 
-To build this project we first start by installing its dependancies. The best way to install the dependancies is to use expo-cli tool since this app is built using expo, however you can use npm or yarn but this is not advised. The following is the commads for expo-cli, npm and yarn
+To build this project we first start by installing its dependancies. The best way to install the dependancies is to use yarn since this app is built using expo, however you can use npm but this is not recommended. The following is the commads npm and yarn
 ```bash
-# recommended
-expo install
-# if you use npm then
-npm install --save
-# if you use yarn then
+# if you are using yarn (recommended)
 yarn install
+# if you are using npm then
+npm install --save
 ```
 
 ### `Configure Environment`
 
-After Installing dependancies, it's time to configure our environment. you will find a templete for the env in the source folder called [env.js.example](./src/env.js.example). This example contains all the needed enviroment congiuraion.
+After Installing dependancies, it's time to configure our environment. You will find a templete for the env in the source folder called [env.js.example](./src/env.js.example), this example contains all the needed enviroment congiuraion. You will need to register for a [free TMDB account](https://www.themoviedb.org/signup) and [request a free API key](https://www.themoviedb.org/settings/api) to be able to use this application. After obtaining you api key you will set it in the env.js as the corresponding value for `tmdbApiKey`.
 
 ### `Run The App In Debug Mode`
 
