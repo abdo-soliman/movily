@@ -185,7 +185,7 @@ export default class MoviesPage extends Component {
                                 movie={movie}
                                 type="movie"
                                 last={idx === this.state.movies.length - 1}
-                                paginated={this.state.numPages === 1}
+                                paginated={this.state.numPages !== 1}
                             />
                         );
                     })

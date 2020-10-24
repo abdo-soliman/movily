@@ -6,6 +6,8 @@
     width: 100%;
     object-fit: contain;
     margin-bottom: 20px;
+    border-radius: 100px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .brand-row {
@@ -14,14 +16,14 @@
 
 .brand-name {
     font-family: "FV Almelo";
-    color: white;
+    color: #ed0015;
     font-size: 50px;
     text-align: center;
 }
 
 .slogan {
     font-family: "Grand Hotel";
-    color: white;
+    color: #ed0015;
     font-size: 40px;
     text-align: center;
 }

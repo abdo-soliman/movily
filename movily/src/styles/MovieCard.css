@@ -16,21 +16,21 @@
 
 .movie-title {
     font-family: "FV Almelo";
-    color: white;
+    color: black;
     font-size: 40px;
     text-align: left;
     padding: 0px 20px;
 }
 
 .movie-genre {
-    color: white;
+    color: black;
     text-align: justify;
     font-weight: bold;
     padding: 0px 20px;
 }
 
 .movie-overview {
-    color: white;
+    color: black;
     text-align: justify;
     padding: 0px 20px;
 }
@@ -38,6 +38,6 @@
 .separator {
     width: 90%;
     margin-top: 30px;
-    background-color: #fdf2dc;
+    background-color: black;
     height: 1px;
 }
